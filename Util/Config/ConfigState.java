@@ -1,9 +1,3 @@
-package me.illusion.outcastmoderation.Util.Config;
-
-import me.illusion.outcastmoderation.Moderation.Punishments.Cooldown;
-import me.illusion.outcastmoderation.Moderation.Punishments.Punish;
-import me.illusion.outcastmoderation.Moderation.Utilities;
-
 public class ConfigState {
     private CreateConfig config;
 
