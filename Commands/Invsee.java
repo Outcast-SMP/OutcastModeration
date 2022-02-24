@@ -1,18 +1,3 @@
-package me.illusion.outcastmoderation.Commands;
-
-import me.illusion.outcastmoderation.Moderation.Punishments.Punish;
-import me.illusion.outcastmoderation.Util.Communication.Chat;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 public class Invsee implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
