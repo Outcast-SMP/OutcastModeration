@@ -1,19 +1,3 @@
-package me.illusion.outcastmoderation.Moderation.Punishments;
-
-import com.google.common.collect.Maps;
-import me.illusion.outcastmoderation.OutcastModeration;
-import me.illusion.outcastmoderation.Util.Communication.Chat;
-import me.illusion.outcastmoderation.Util.Communication.LogMe;
-import me.illusion.outcastmoderation.Util.Config.ConfigData;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-
-import java.util.ArrayList;
-import java.util.Map;
-
 public class Punish {
     private static Map<String, Long> bannedPlayers = Maps.newHashMap();
     private static Map<String, String> banReasons = Maps.newHashMap();
