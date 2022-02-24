@@ -1,5 +1,3 @@
-package me.illusion.outcastmoderation.Util;
-
 public class Time {
     public static String formatTime(long sec) {
         long seconds = sec % 60;
