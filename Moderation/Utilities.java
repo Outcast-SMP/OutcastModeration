@@ -30,6 +30,10 @@ public class Utilities {
     }
 
     public boolean vanish() {
+        if (ply == null) {
+            return false;
+        }
+        
         if (getVanishedPlayerList().contains(ply)) {
             new Chat("&8" + ply.getName() + " removed their vanish.").privateMessage(chatPermission, chatWatermark);
             return unVanishPlayer(ply);
