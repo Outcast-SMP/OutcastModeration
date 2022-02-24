@@ -1,18 +1,3 @@
-package me.illusion.outcastmoderation;
-
-import me.illusion.outcastcore.OutcastCore;
-import me.illusion.outcastmoderation.Commands.*;
-import me.illusion.outcastmoderation.Util.Communication.LogMe;
-import me.illusion.outcastmoderation.Util.Config.ConfigState;
-import me.illusion.outcastmoderation.Util.Config.CreateConfig;
-import me.illusion.outcastranks.OutcastRanks;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.reflections.Reflections;
-
-import java.lang.reflect.InvocationTargetException;
-
 public final class OutcastModeration extends JavaPlugin {
     static OutcastModeration instance = null;
 
