@@ -1,15 +1,3 @@
-package me.illusion.outcastmoderation.Moderation;
-
-import com.google.common.collect.Maps;
-import me.illusion.outcastmoderation.OutcastModeration;
-import me.illusion.outcastmoderation.Util.Communication.Chat;
-import me.illusion.outcastmoderation.Util.Config.ConfigData;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.Map;
-
 public class Utilities {
     private static ArrayList<Player> vanishedPlayers = new ArrayList<>();
     private static Map<String, String> nickPlayers = Maps.newHashMap();
