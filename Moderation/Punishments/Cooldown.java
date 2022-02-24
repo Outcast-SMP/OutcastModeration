@@ -1,11 +1,3 @@
-package me.illusion.outcastmoderation.Moderation.Punishments;
-
-import com.google.common.collect.Maps;
-import me.illusion.outcastmoderation.Util.Time;
-
-import java.util.Map;
-import java.util.UUID;
-
 public class Cooldown {
     private static Map<String, Long> cooldowns = Maps.newHashMap();
 
