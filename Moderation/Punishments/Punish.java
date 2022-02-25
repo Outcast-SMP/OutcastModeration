@@ -7,6 +7,9 @@ public class Punish {
     private static Map<String, Long> playerHasChatted = Maps.newHashMap();
     private static ArrayList<Player> frozePlayers = new ArrayList<>();
 
+    private static Map<String, Long> blocksBroken = Maps.newLinkedHashMap();
+    private static Map<String, Long> mineBannedPlayers = Maps.newHashMap();
+
     private String chatPermission = new ConfigData(OutcastModeration.getInstance().staff).getStringFromConfig("moderation.permissions.staff-chat");
     private String chatWatermark = new ConfigData(OutcastModeration.getInstance().staff).getStringFromConfig("moderation.staff-chat.prefix");
 
@@ -46,6 +49,92 @@ public class Punish {
 
     public static ArrayList<Player> getFrozenPlayerList() {
         return frozePlayers;
+    }
+
+    public static Map<String, Long> getBlockBrokenList() {
+        return blocksBroken;
+    }
+
+    public static Map<String, Long> getMineBannedList() {
+        return mineBannedPlayers;
+    }
+
+    public static void oreCheck(BlockBreakEvent e, Player ply) {
+        Block block = e.getBlock();
+        Material blockMaterial = block.getBlockData().getMaterial();
+
+        String thresholdItems = new ConfigData(OutcastModeration.getInstance().antixray).getStringFromConfig(blockMaterial + ".threshold-items");
+        String thresholdTime = new ConfigData(OutcastModeration.getInstance().antixray).getStringFromConfig(blockMaterial + ".threshold-time");
+        String cooldownTime = new ConfigData(OutcastModeration.getInstance().antixray).getStringFromConfig("moderation.antixray.cooldown-time");
+
+        if (ChatColor.stripColor(thresholdItems).equalsIgnoreCase("none")) {
+            return;
+        }
+
+        String getBrokenString = null;
+        Long time = Cooldown.setBanTime(thresholdTime);
+
+        if (!getBlockBrokenList().isEmpty()) {
+            for (Map.Entry<String, Long> entry : getBlockBrokenList().entrySet()) {
+                if (entry.getKey().contains(ply.getName() + "_" + blockMaterial)) {
+                    getBrokenString = entry.getKey();
+                }
+            }
+        }
+
+        if (getBrokenString == null) {
+            getBlockBrokenList().put(ply.getName() + "_" + blockMaterial + "#1", Cooldown.storeBanTime(time));
+            return;
+        }
+
+        int amountMined = Integer.parseInt(getBrokenString.substring(getBrokenString.lastIndexOf('#') + 1));
+        long checkTime = getBlockBrokenList().get(getBrokenString) - System.currentTimeMillis();
+
+        if (!(checkTime > 0)) {
+            getBlockBrokenList().remove(getBrokenString);
+            return;
+        }
+
+        if (amountMined > Integer.parseInt(thresholdItems)) {
+            if (!new Punish(ply.getName()).mineBan(cooldownTime, blockMaterial)) {
+                new LogMe("Unable to ban '" + ply.getName() + "' from mining.").Error();
+                return;
+            }
+            getBlockBrokenList().remove(getBrokenString);
+
+            e.setDropItems(false);
+            e.setExpToDrop(0);
+            return;
+        }
+
+        Long getPreviousTime = getBlockBrokenList().get(getBrokenString);
+
+        if (amountMined > 1)
+            removeStringFromMap(getBlockBrokenList(), ply.getName() + "_" + blockMaterial, (amountMined - 1));
+
+        getBlockBrokenList().put(ply.getName() + "_" + blockMaterial + "#" + (amountMined + 1), getPreviousTime);
+    }
+
+    public static boolean mineBanned(BlockBreakEvent e, Player ply) {
+        Block block = e.getBlock();
+        Material mat = block.getBlockData().getMaterial();
+
+        if (!getMineBannedList().containsKey(ply.getName() + "_" + mat)) {
+            return false;
+        }
+
+        long checkTime = getMineBannedList().get(ply.getName() + "_" + mat) - System.currentTimeMillis();
+
+        if (!(checkTime > 0)) {
+            getMineBannedList().remove(ply.getName() + "_" + mat);
+            return false;
+        }
+
+        e.setDropItems(false);
+        e.setExpToDrop(0);
+
+        //new Chat(ply, "&7You are currently on a cooldown (" + Cooldown.getBanTimeFormat(checkTime) + ")").message(false);
+        return true;
     }
 
     public static void banCheck(PlayerLoginEvent e, Player ply) {
@@ -108,6 +197,19 @@ public class Punish {
 
         e.setCancelled(false);
         getPlayerChattedList().remove(ply.getName());
+    }
+
+    public boolean mineBan(String duration, Material mat) {
+        if (playerName == null) {
+            return false;
+        }
+
+        Long time = Cooldown.setBanTime(duration);
+        String formatTime = Cooldown.getBanTimeFormat(time);
+
+        new Chat("&7" + playerName + " possible xray (&a" + mat + "&7). Placed on cooldown for &a" + formatTime + "&7.").privateMessage(chatPermission, chatWatermark);
+
+        return mineBanPlayer(playerName + "_" + mat, Cooldown.storeBanTime(time));
     }
 
     public boolean ban(Player staff, String duration, String reason) {
@@ -202,6 +304,12 @@ public class Punish {
         }
     }
 
+    private static void removeStringFromMap(Map<String, Long> map, String value, int amount) {
+        for (int i = 1; i <= amount; i++) {
+            map.remove(value + "#" + amount);
+        }
+    }
+
     private boolean banPlayer(String playerName, String reason, Long time) {
         try {
             getBannedPlayerList().put(playerName, time); // 7 centuries
@@ -253,6 +361,17 @@ public class Punish {
             return true;
         }
         catch (ClassCastException | NullPointerException | UnsupportedOperationException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean mineBanPlayer(String playerName, Long time) {
+        try {
+            getMineBannedList().put(playerName, time);
+            return true;
+        }
+        catch (ClassCastException | NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
             ex.printStackTrace();
         }
         return false;
