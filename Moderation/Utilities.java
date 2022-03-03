@@ -47,8 +47,16 @@ public class Utilities {
         }
 
         if (getVanishedPlayerList().contains(ply)) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                onlinePlayer.showPlayer(OutcastModeration.getInstance(), ply);
+            }
+
             new Chat("&7" + ply.getName() + " removed their vanish.").privateMessage(chatPermission, chatWatermark);
             return unVanishPlayer(ply);
+        }
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.hidePlayer(OutcastModeration.getInstance(), ply);
         }
 
         new Chat("&7" + ply.getName() + " has entered vanish.").privateMessage(chatPermission, chatWatermark);
