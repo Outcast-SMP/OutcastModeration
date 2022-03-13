@@ -38,6 +38,8 @@ public class Nick implements CommandExecutor, TabCompleter {
                 new Chat(ply, "&cThere was a problem removing your nickname.").message(true);
                 return true;
             }
+            
+            ply.setDisplayName(ply.getName());
             new Chat(ply, "&7You no longer have a nickname.").message(true);
             return true;
         }
