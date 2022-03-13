@@ -47,10 +47,9 @@ public class Tp implements CommandExecutor, TabCompleter {
                 new Chat(ply, "&7Teleported to &c&l" + playerName + "&7...").message(true);
                 return true;
             }
-            else {
-                new Chat(ply, "&cThere is no player named " + playerName + ".").message(true);
-            }
         }
+        
+        new Chat(ply, "&cThere is no player named " + playerName + ".").message(true);
         return true;
     }
 
