@@ -36,14 +36,15 @@ public class Freeze implements CommandExecutor, TabCompleter {
             if (onlinePlayer.getName().equals(playerName)) {
                 if (!new Punish(onlinePlayer.getName()).freeze(ply)) {
                     new Chat(ply, "&cUnable to freeze the specified player '" + playerName + "'.").message(true);
+                    return true;
                 }
-                new Chat(ply, "&a" + playerName + " has been frozen.").message(true);
+                
+                new Chat(ply, "&aYou have toggled " + playerName + " frozen state.").message(true);
                 return true;
             }
-            else {
-                new Chat(ply, "&cThere is no player named " + playerName + ".").message(true);
-            }
         }
+        
+        new Chat(ply, "&cThere is no player named " + playerName + ".").message(true);
         return true;
     }
 
