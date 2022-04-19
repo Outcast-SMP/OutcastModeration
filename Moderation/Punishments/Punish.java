@@ -25,7 +25,7 @@ public class Punish {
     private static Map<String, Long> mutedPlayers = Maps.newHashMap();
     private static Map<String, Long> delayedChat = Maps.newHashMap();
     private static Map<String, Long> playerHasChatted = Maps.newHashMap();
-    private static ArrayList<Player> frozePlayers = new ArrayList<>();
+    private static Map<String, Boolean> frozenPlayers = Maps.newHashMap();
 
     private static Map<String, Long> blocksBroken = Maps.newLinkedHashMap();
     private static Map<String, Long> mineBannedPlayers = Maps.newHashMap();
@@ -67,8 +67,8 @@ public class Punish {
         return playerHasChatted;
     }
 
-    public static ArrayList<Player> getFrozenPlayerList() {
-        return frozePlayers;
+    public static Map<String, Boolean> getFrozenPlayerList() {
+        return frozenPlayers;
     }
 
     public static Map<String, Long> getBlockBrokenList() {
@@ -313,7 +313,7 @@ public class Punish {
             return false;
         }
 
-        if (!frozePlayers.contains(punishPlayer)) {
+        if (!getFrozenPlayerList().containsKey(punishPlayer.getUniqueId().toString())) {
             new Chat(Format.formatString(new ConfigData(OutcastModeration.getInstance().chatMessages)
                     .getStringFromConfig("staff.alert.freeze.enable"), "#IGN", playerName, "#STAFF", staff.getName())).privateMessage(chatPermission, chatWatermark);
 
@@ -384,7 +384,7 @@ public class Punish {
 
     private boolean freezePlayer(Player ply) {
         try {
-            frozePlayers.add(ply);
+            getFrozenPlayerList().put(ply.getUniqueId().toString(), true);
             return true;
         }
         catch (ClassCastException | NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
@@ -395,7 +395,7 @@ public class Punish {
 
     private boolean unFreezePlayer(Player ply) {
         try {
-            frozePlayers.remove(ply);
+            getFrozenPlayerList().remove(ply.getUniqueId().toString());
             return true;
         }
         catch (ClassCastException | NullPointerException | UnsupportedOperationException ex) {
